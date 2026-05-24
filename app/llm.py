@@ -6,12 +6,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemma-4-26b-a4b-it"
 
-# TODO: Ambil API key dari file .env
-# Gunakan os.getenv("NAMA_ENV_VARIABLE") untuk mengambil API Key dari file .env.
-# Pastikan di file .env terdapat baris: GEMINI_API_KEY=your_api_key
-GOOGLE_API_KEY = ...
+GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CHAT_HISTORY_FILE = os.path.join(BASE_DIR, "chat_history.json")

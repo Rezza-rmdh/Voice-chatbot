@@ -1,0 +1,9 @@
+# Virtual environments
+.venv/
+.env
+__pycache__/
+*.py[oc]
+models/
+data/
+app/coqui_tts/
+logs/

@@ -5,16 +5,9 @@ import subprocess
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# path ke folder utilitas STT
-WHISPER_DIR = os.path.join(BASE_DIR, "whisper.cpp")
-
-# TODO: Lengkapi path ke binary whisper-cli
-# Gunakan os.path.join() untuk menggabungkan WHISPER_DIR, "build", "bin", dan "whisper-cli"
-WHISPER_BINARY = ...
-
-# TODO: Lengkapi path ke file model Whisper (contoh: ggml-large-v3-turbo.bin)
-# Gunakan os.path.join() untuk mengarah ke file model di dalam folder "models"
-WHISPER_MODEL_PATH = ...
+WHISPER_DIR = os.path.join(BASE_DIR , "..", "models", "whisper.cpp")
+WHISPER_BINARY = os.path.join(WHISPER_DIR, "build", "bin", "Release", "whisper-cli.exe")
+WHISPER_MODEL_PATH = os.path.join(WHISPER_DIR, "models", "ggml-small.bin")
 
 def transcribe_speech_to_text(file_bytes: bytes, file_ext: str = ".wav") -> str:
     """
