@@ -39,6 +39,7 @@ If you're unsure about an answer, be honest and say that you don't know.
 # Jika ingin melihat contoh implementasi, baca dokumentasi resmi Gemini:
 # https://github.com/google-gemini/cookbook/blob/main/quickstarts/Get_started.ipynb
 client = genai.Client(api_key = GOOGLE_API_KEY)
+chat_config = ...
 history_adapter = TypeAdapter(list[types.Content])
 
 # Fungsi untuk menyimpan/memuat riwayat chat
