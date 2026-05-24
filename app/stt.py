@@ -10,14 +10,6 @@ WHISPER_BINARY = os.path.join(WHISPER_DIR, "build", "bin", "Release", "whisper-c
 WHISPER_MODEL_PATH = os.path.join(WHISPER_DIR, "models", "ggml-small.bin")
 
 def transcribe_speech_to_text(file_bytes: bytes, file_ext: str = ".wav") -> str:
-    """
-    Transkrip file audio menggunakan whisper.cpp CLI
-    Args:
-        file_bytes (bytes): Isi file audio
-        file_ext (str): Ekstensi file, default ".wav"
-    Returns:
-        str: Teks hasil transkripsi
-    """
     with tempfile.TemporaryDirectory() as tmpdir:
         audio_path = os.path.join(tmpdir, f"{uuid.uuid4()}{file_ext}")
         result_path = os.path.join(tmpdir, "transcription.txt")

@@ -38,8 +38,7 @@ If you're unsure about an answer, be honest and say that you don't know.
 # Gunakan types.GenerateContentConfig(system_instruction=...) untuk membuat konfigurasi awal.
 # Jika ingin melihat contoh implementasi, baca dokumentasi resmi Gemini:
 # https://github.com/google-gemini/cookbook/blob/main/quickstarts/Get_started.ipynb
-client = ...
-chat_config = ...
+client = genai.Client(api_key = GOOGLE_API_KEY)
 history_adapter = TypeAdapter(list[types.Content])
 
 # Fungsi untuk menyimpan/memuat riwayat chat
