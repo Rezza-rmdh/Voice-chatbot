@@ -17,11 +17,13 @@ voice_chatbot_project/
 │   ├── llm.py             # Integrasi Gemini API
 │   ├── stt.py             # Transkripsi suara (whisper.cpp)
 │   ├── tts.py             # TTS dengan Coqui
-│   └── whisper.cpp/       # Hasil clone whisper.cpp
 │   └── coqui_utils/       # Model dan config Coqui TTS
 │
 ├── gradio_app/
 │   └── app.py             # Frontend dengan Gradio
+│
+├── models/
+│   └── whisper.cpp/       # Hasil clone whisper.cpp
 │
 ├── .env                   # Menyimpan Gemini API Key
 ├── requirements.txt       # Daftar dependensi Python
