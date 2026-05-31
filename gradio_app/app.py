@@ -1,50 +1,98 @@
 import os
-import tempfile
+import uuid
 import requests
 import gradio as gr
-import scipy.io.wavfile
 
-def voice_chat(audio):
-    if audio is None:
-        return None
-    
-    sr, audio_data = audio
+API_URL = "http://127.0.0.1:8000/voice-chat"
 
-    # simpan sebagai .wav
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmpfile:
-        scipy.io.wavfile.write(tmpfile.name, sr, audio_data)
-        audio_path = tmpfile.name
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMP_DIR = os.path.join(BASE_DIR, "temp")
 
-    # kirim ke endpoint FastAPI
-    with open(audio_path, "rb") as f:
-        files = {"file": ("voice.wav", f, "audio/wav")}
-        response = requests.post("http://localhost:8000/voice-chat", files=files)
+os.makedirs(TEMP_DIR, exist_ok=True)
 
-    if response.status_code == 200:
-        # simpan file respons audio dari chatbot
-        output_audio_path = os.path.join(tempfile.gettempdir(), "tts_output.wav")
-        with open(output_audio_path, "wb") as f:
+def voice_chat(audio_path: str, mode: str):
+
+    if not audio_path:
+        return None, "Silakan rekam audio terlebih dahulu."
+
+    try:
+        with open(audio_path, "rb") as audio_file:
+
+            response = requests.post(
+                API_URL,
+                files={
+                    "file": (
+                        os.path.basename(audio_path),
+                        audio_file,
+                        "audio/wav"
+                    )
+                },
+                data={"mode": mode},
+                timeout=300
+            )
+
+        if response.status_code != 200:
+            return None, f"Backend Error {response.status_code}\n{response.text}"
+
+        output_path = os.path.join(
+            TEMP_DIR,
+            f"response_{uuid.uuid4()}.wav"
+        )
+
+        with open(output_path, "wb") as f:
             f.write(response.content)
-        return output_audio_path
-    else:
-        return None
 
-# UI Gradio
-with gr.Blocks() as demo:
-    gr.Markdown("# 🎙️ Voice Chatbot")
-    gr.Markdown("Berbicara langsung ke mikrofon dan dapatkan jawaban suara dari asisten AI.")
+        return output_path, "Berhasil memproses audio."
 
-    with gr.Row():
-        with gr.Column():
-            audio_input = gr.Audio(sources="microphone", type="numpy", label="🎤 Rekam Pertanyaan Anda")
-            submit_btn = gr.Button("🔁 Submit")
-        with gr.Column():
-            audio_output = gr.Audio(type="filepath", label="🔊 Balasan dari Asisten")
+    except Exception as e:
+        return None, f"{str(e)}"
+
+
+with gr.Blocks(
+    title="Voice Chatbot",
+    theme=gr.themes.Soft(primary_hue="orange")
+) as demo:
+
+    gr.Markdown(
+        """
+        # 🎙️ Voice Chatbot
+        
+        **Berbicara secara alami dan dapatkan jawaban suara dari AI.**
+        """
+    )
+
+    mode_input = gr.Radio(
+        choices=["normalize", "preserve"],
+        value="normalize",
+        label="Mode Percakapan"
+    )
+
+    audio_input = gr.Audio(
+        sources=["microphone"],
+        type="filepath",
+        label="🎤 Rekam Pertanyaan Anda"
+    )
+
+    submit_btn = gr.Button(
+        "Kirim Audio",
+        variant="primary"
+    )
+
+    status_box = gr.Textbox(
+        label="📋 Status",
+        interactive=False,
+        lines=3
+    )
+
+    audio_output = gr.Audio(
+        type="filepath",
+        label="🔊 Jawaban AI"
+    )
 
     submit_btn.click(
         fn=voice_chat,
-        inputs=audio_input,
-        outputs=audio_output
+        inputs=[audio_input, mode_input],
+        outputs=[audio_output, status_box]
     )
 
 demo.launch()
