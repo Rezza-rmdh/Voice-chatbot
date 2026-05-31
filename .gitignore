@@ -4,6 +4,9 @@
 __pycache__/
 *.py[oc]
 models/
-data/
+data/corpus/audio
+data/results/checkpoint.json
+data/history
 app/coqui_tts/
-logs/
+log/
+temp/
